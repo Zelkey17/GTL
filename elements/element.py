@@ -1,7 +1,7 @@
 from base import Element
 from groups.base import Group
 
-class IntegerElement(Element):
+class IntegerElement(Element[int]):
     """
     Представляет элемент группы с цеочисленными элементами.
 
@@ -13,7 +13,7 @@ class IntegerElement(Element):
         _reference_to_group (Group[int, Element[int]]): Группа, к которой принадлежит элемент.
     """
 
-    def __init__(self, value: int, reference_to_group: Group[int, 'Element[int]']):
+    def __init__(self, value: int, reference_to_group: Group[int, 'IntegerElement']):
         """
         Инициализирует элемент группы.
 
@@ -30,7 +30,7 @@ class IntegerElement(Element):
         return self._value
 
     @property
-    def group(self) -> Group[int, Element[int]]:
+    def group(self) -> Group[int, 'IntegerElement']:
         """Возвращает группу, к которой принадлежит элемент."""
         return self._reference_to_group
 
@@ -45,7 +45,7 @@ class IntegerElement(Element):
             raise TypeError("Несовместимые элементы для сравнения")
         return self._value == other.value
 
-    def __mul__(self, other: 'Element[int]') -> 'Element[int]':
+    def __mul__(self, other: 'IntegerElement') -> 'IntegerElement':
         """
         Групповая операция.
 
@@ -62,7 +62,7 @@ class IntegerElement(Element):
             raise TypeError("Несовместимые элементы для умножения")
         return self._reference_to_group.op(self, other)
 
-    def __pow__(self, power: int, modulo=None) -> 'Element[int]':
+    def __pow__(self, power: int, modulo=None) -> 'IntegerElement':
         """
         Возведение элемента в степень.
 
@@ -74,7 +74,7 @@ class IntegerElement(Element):
         """
         return self._reference_to_group.pow(self, power)
 
-    def inv(self) -> 'Element[int]':
+    def inv(self) -> 'IntegerElement':
         """Возвращает обратный элемент относительно групповой операции."""
         return self._reference_to_group.inverse(self)
 
