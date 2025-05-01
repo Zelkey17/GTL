@@ -80,18 +80,6 @@ class FiniteGroup(Group):
         """
 
     @abstractmethod
-    def normalaizer(self) -> "SubGroup":
-        """
-        Вычисляет нормализатор группы.
-
-        Примечание: Название метода содержит опечатку (должно быть Normalizer).
-        Нормализатор подгруппы H в группе G — это наибольшая подгруппа G, в которой H нормальна.
-
-        Returns:
-            SubGroup: Нормализатор данной группы.
-        """
-
-    @abstractmethod
     def solvable(self) -> bool:
         """
         Проверяет, является ли группа разрешимой.
