@@ -48,25 +48,6 @@ class FiniteGroup(Group):
         """
 
     @abstractmethod
-    def is_normal(self, other: Group) -> bool:
-        """
-        Проверяет, является ли подгруппа `other` нормальной в данной группе.
-
-        Подгруппа `other` называется нормальной, если она инвариантна относительно
-        сопряжения любым элементом этой группы.
-
-        Args:
-            other (Group): Подгруппа, которую нужно проверить на нормальность.
-                Должна быть подгруппой данной группы.
-
-        Returns:
-            bool: True, если `other` нормальна в данной группе, False в противном случае.
-
-        Raises:
-            ValueError: Если `other` не является подгруппой данной группы.
-        """
-
-    @abstractmethod
     def __len__(self) -> int:
         """
         Возвращает порядок (количество элементов) конечной группы.
@@ -99,7 +80,7 @@ class FiniteGroup(Group):
         """
 
     @abstractmethod
-    def Normalaizer(self) -> "SubGroup":
+    def normalaizer(self) -> "SubGroup":
         """
         Вычисляет нормализатор группы.
 
@@ -111,7 +92,7 @@ class FiniteGroup(Group):
         """
 
     @abstractmethod
-    def Solvable(self) -> bool:
+    def solvable(self) -> bool:
         """
         Проверяет, является ли группа разрешимой.
 
