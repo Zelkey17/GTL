@@ -102,7 +102,7 @@ class CyclicGroup(FiniteGroup):
         Возвращает:
         bool: True, если порядок группы является простым числом, False в противном случае.
         """
-        return sympy.isprime(self._order)
+        return self._order == 1 or sympy.isprime(self._order)
 
     def is_solvable(self) -> bool:
         """
