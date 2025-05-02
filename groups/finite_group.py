@@ -23,7 +23,7 @@ class FiniteGroup(Group):
 
         Returns:
             bool: True, если группа удовлетворяет обратной теореме Лагранжа,
-                False в противном случае.
+                False в иначе.
         """
 
     @abstractmethod
