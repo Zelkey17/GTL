@@ -68,7 +68,9 @@ class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
     def is_simple(self) -> bool:
         if self.n >= 2:
             return False
-        return isprime(totient(self.m))
+        if self.m == 1:
+            return True
+        return isprime(self.m)
 
     def is_lagrangian(self) -> bool:
         return self.n == 1
