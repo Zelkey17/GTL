@@ -1,7 +1,10 @@
-from .base import Group
+
 from abc import ABC, abstractmethod
 
-class FiniteGroup(Group):
+from groups.base import Group
+
+
+class FiniteGroup[T, E](Group[T, E]):
     """
     Абстрактный базовый класс, представляющий конечную группу.
 
@@ -91,3 +94,5 @@ class FiniteGroup(Group):
         Returns:
             SubGroup: Центр группы.
         """
+
+
