@@ -1,5 +1,6 @@
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 
 from groups.base import Group
 
@@ -94,5 +95,17 @@ class FiniteGroup[T, E](Group[T, E]):
         Returns:
             SubGroup: Центр группы.
         """
+
+    @abstractmethod
+    def __getitem__(self, item: T)-> E:
+        ...
+
+    @abstractmethod
+    def __contains__(self, item: E) -> bool:
+        ...
+
+    @abstractmethod
+    def __iter__(self) -> Iterator[E]:
+        ...
 
 

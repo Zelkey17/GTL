@@ -50,3 +50,8 @@ class Element(ABC, Generic[T]):
     def __repr__(self) -> str:
         """Строковое представление элемента (для отладки)."""
         ...
+
+    @abstractmethod
+    def __hash__(self):
+        ...
+
