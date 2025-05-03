@@ -2,7 +2,7 @@ from itertools import product
 from math import prod
 
 import numpy as np
-from sympy import factorint, isprime, Matrix, totient
+from sympy import isprime, Matrix
 
 from elements.Linear import MatrixElement
 from groups.finite_group import FiniteGroup
@@ -10,6 +10,7 @@ from groups.infinite_group import InfiniteGroup
 
 
 class GLnR(InfiniteGroup[np.ndarray, MatrixElement]):
+
     def __init__(self, n: int):
         self.n = n
 
@@ -32,6 +33,12 @@ class GLnR(InfiniteGroup[np.ndarray, MatrixElement]):
 
 
 class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
+
+    def __new__(cls, n:int, m:int):
+        # TODO n=2 m=2 return S3
+        # TODO n=1 m=p return Z(p-1)
+        return super().__new__(cls)
+
     def __init__(self, n: int, m: int):
         self.n = n
         self.m = m
@@ -68,9 +75,7 @@ class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
     def is_simple(self) -> bool:
         if self.n >= 2:
             return False
-        if self.m == 1:
-            return True
-        return isprime(self.m)
+        return isprime(self.m-1)
 
     def is_lagrangian(self) -> bool:
         return self.n == 1
@@ -92,7 +97,4 @@ class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
     def solvable(self) -> bool:
         if self.n == 1:
             return True
-        primes = factorint(self.m).keys()
-        if self.n == 2 and all(p in (2, 3) for p in primes):
-            return True
-        return False
+        return self.n == 2 and self.m in (2, 3)
