@@ -1,7 +1,9 @@
-from .base import E, Group
-from ..elements.element import IntegerElement
-from .finite_group import FiniteGroup
+from elements.element import IntegerElement
 import sympy
+
+from groups.finite_group import FiniteGroup
+from groups.Subgroup import SubGroup
+
 
 class CyclicGroup(FiniteGroup):
     """
@@ -58,7 +60,7 @@ class CyclicGroup(FiniteGroup):
         Возвращает:
             IntegerElement: Обратный элемент.
         """
-        return IntegerElement(-a.value % self._order)
+        return IntegerElement(-a.value % self._order,self)
 
     def __len__(self):
         """
@@ -136,3 +138,9 @@ class CyclicGroup(FiniteGroup):
             SubGroup: Тривиальная подгруппа.
         """
         return SubGroup.trivial_all(self)
+
+    def __getitem__(self, item: int) -> IntegerElement:
+        return IntegerElement(item%self._order, self)
+
+    def _all_elements(self):
+        return [self[i] for i in range(1, len(self)+1)]
