@@ -1,4 +1,4 @@
-from base import Element
+from elements.base import Element
 from groups.base import Group
 
 class IntegerElement(Element[int]):
@@ -81,3 +81,6 @@ class IntegerElement(Element[int]):
     def __repr__(self) -> str:
         """Строковое представление элемента."""
         return str(self._value)
+
+    def __hash__(self):
+        return hash(self._value)

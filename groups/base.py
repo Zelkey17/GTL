@@ -3,10 +3,9 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-from ..elements.base import Element
 
 T = TypeVar('T')
-E = TypeVar('E', bound=Element)
+E = TypeVar('E', bound="Element")
 
 
 class Group(ABC, Generic[T, E]):
