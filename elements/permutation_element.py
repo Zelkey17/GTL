@@ -46,5 +46,5 @@ class PermutationElement(Element[list]):
                     perm += [cyc]
         return perm
 
-    def __hash__(self) -> :
-
+    def __hash__(self) -> int:
+        return hash(tuple(self._value))
