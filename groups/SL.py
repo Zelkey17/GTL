@@ -42,6 +42,13 @@ class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
     Специальная линейная группа SL(n, m):
     невырожденные матрицы n×n над Z/mZ с det ≡ 1 (mod m).
     """
+
+    def __new__(cls, n:int,m:int):
+        # TODO n=2 m=2 return S3
+        # TODO n=2 m=4 return A5
+        # TODO n=4 m=2 return A8
+        return super().__new__(cls)
+
     def __init__(self, n: int, m: int):
         assert isinstance(n, int) and n > 0, "n должно быть целым >0"
         assert isinstance(m, int) and m > 1, "m должно быть целым >1"

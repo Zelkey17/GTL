@@ -10,6 +10,7 @@ from groups.infinite_group import InfiniteGroup
 
 
 class GLnR(InfiniteGroup[np.ndarray, MatrixElement]):
+
     def __init__(self, n: int):
         self.n = n
 
@@ -32,6 +33,12 @@ class GLnR(InfiniteGroup[np.ndarray, MatrixElement]):
 
 
 class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
+
+    def __new__(cls, n:int, m:int):
+        # TODO n=2 m=2 return S3
+        # TODO n=1 m=p return Z(p-1)
+        return super().__new__(cls)
+
     def __init__(self, n: int, m: int):
         self.n = n
         self.m = m
