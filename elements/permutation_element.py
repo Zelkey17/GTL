@@ -33,7 +33,7 @@ class PermutationElement(Element[list]):
     def __repr__(self) -> str:
         return str(*self._value)
 
-    def cyclic_presentation(self, include_trivial : bool) -> list:
+    def cyclic_presentation(self, include_trivial : bool) -> list[tuple[int]]:
         perm = []
         used = [range(1, len(self) + 1)]
 
