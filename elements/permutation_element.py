@@ -32,3 +32,19 @@ class PermutationElement(Element[list]):
 
     def __repr__(self) -> str:
         return str(*self._value)
+
+    def cyclic_presentation(self, is_add_trivial : bool) -> list:
+        perm = []
+        used = [range(1, len(self) + 1)]
+
+        for i in range(1, len(self) + 1):
+            if not used[i]:
+                cyc = (self._value[i], )
+                while (self._value[cyc[-1] - 1] != cyc[0]):
+                    cyc += (self._value[cyc[-1] - 1], )
+                if len(cyc) > 1 or is_add_trivial:
+                    perm += [cyc]
+        return perm
+
+    def __hash__(self) -> :
+
