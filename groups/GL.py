@@ -2,7 +2,7 @@ from itertools import product
 from math import prod
 
 import numpy as np
-from sympy import factorint, isprime, Matrix, totient
+from sympy import isprime, Matrix
 
 from elements.Linear import MatrixElement
 from groups.finite_group import FiniteGroup
@@ -68,9 +68,7 @@ class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
     def is_simple(self) -> bool:
         if self.n >= 2:
             return False
-        if self.m == 1:
-            return True
-        return isprime(self.m)
+        return isprime(selfm-1)
 
     def is_lagrangian(self) -> bool:
         return self.n == 1
@@ -92,7 +90,4 @@ class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
     def solvable(self) -> bool:
         if self.n == 1:
             return True
-        primes = factorint(self.m).keys()
-        if self.n == 2 and all(p in (2, 3) for p in primes):
-            return True
-        return False
+        return self.n == 2 and self.m in (2, 3)
