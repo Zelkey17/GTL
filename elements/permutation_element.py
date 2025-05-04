@@ -35,7 +35,7 @@ class PermutationElement(Element[list[int]]):
         return self._reference_to_group.inverse(self)
 
     def __repr__(self) -> str:
-        return str(*self._value)
+        return " ".join(map(str, self._value))
 
     def cyclic_presentation(self, is_add_trivial: bool) -> list[tuple[int]]:
         perm = []

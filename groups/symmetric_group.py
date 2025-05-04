@@ -1,6 +1,12 @@
-from finite_group import FiniteGroup
+from itertools import product
+from typing import Iterator
+
+from elements.permutation_parser import PermutationParser
 from elements.permutation_element import PermutationElement
 import math
+
+from groups.Subgroup import SubGroup
+from groups.finite_group import FiniteGroup
 
 
 class SymmetricGroup(FiniteGroup):
@@ -14,128 +20,81 @@ class SymmetricGroup(FiniteGroup):
         return list(range(1, self._rank + 1))
 
     def op(self, a: PermutationElement,
-                 b: PermutationElement) -> PermutationElement:
-        perm = [b._value[a._value[i]] for i in range(0, self._rank)]
+           b: PermutationElement) -> PermutationElement:
+        perm = [b._value[a._value[i] - 1] for i in range(0, self._rank)]
         return PermutationElement(perm, self)
 
-    @abstractmethod
-    def inverse(self, a: E) -> E:
-        """Обратный элемент: inverse(a) такое, что op(a, inverse(a)) == identity."""
-        ...
+    def inverse(self, a: PermutationElement) -> PermutationElement:
+        b = list(range(self._rank))
+        perm = [0] * self._rank
+        for i in range(self._rank):
+            perm[a._value[i] - 1] = i + 1
+        return PermutationElement(perm, self)
 
-    def multiply(self, *elements: E) -> E:
-        """
-        Последовательное умножение: a1 * a2 * ... * an.
-        Если нет аргументов, возвращает identity().
-        """
-        result = self.identity()
-        for el in elements:
-            if el.group is not self:
-                raise ValueError("Элемент из другой группы")
-            result = self.op(result, el)
-        return result
-
-    def pow(self, a: E, exponent: int) -> E:
-        """
-        Быстрое возведение элемента в степень (алгоритм двоичного возведения).
-        Поддерживает отрицательные степени через inverse().
-        """
-        if exponent == 0:
-            return self.identity()
-        base = a
-        exp = exponent
-        if exp < 0:
-            base = self.inverse(a)
-            exp = -exp
-        result = self.identity()
-        while exp:
-            if exp & 1:
-                result = self.op(result, base)
-            base = self.op(base, base)
-            exp >>= 1
-        return result
-
-    @abstractmethod
     def is_lagrangian(self) -> bool:
-        """
-        Проверяет, является ли группа лагранжевой
+        return self._rank <= 4
 
-        Группа называется «лагранжевой», если для каждого делителя её порядка существует
-        хотя бы одна подгруппа такого порядка.
-
-        Returns:
-            bool: True, если группа удовлетворяет обратной теореме Лагранжа,
-                False в иначе.
-        """
-
-    @abstractmethod
     def is_abelian(self) -> bool:
-        """
-        Проверяет, является ли группа абелевой (коммутативной).
+        return self._rank <= 2
 
-        Returns:
-            bool: True, если группа абелева, False в противном случае.
-        """
-
-    @abstractmethod
     def is_simple(self) -> bool:
-        """
-        Проверяет, является ли группа простой.
+        return self._rank <= 2
 
-        Группа называется простой, если у неё нет нетривиальных нормальных подгрупп
-        (т.е. только тривиальная подгруппа и сама группа).
-
-        Returns:
-            bool: True, если группа простая, False в противном случае.
-        """
-
-    @abstractmethod
     def is_solvable(self) -> bool:
-        """
-        Проверяет, является ли группа разрешимой.
-
-        Группа называется разрешимой, если существует субнормальный ряд,
-        все фактор-группы которого абелевы. Эквивалентно, её производный ряд
-        достигает тривиальной подгруппы.
-
-        Returns:
-            bool: True, если группа разрешима, False в противном случае.
-        """
+        return self._rank <= 4
 
     def __len__(self) -> int:
         return math.factorial(self._rank)
 
-    @abstractmethod
-    def comutator(self) -> "SubGroup":
-        """
-        Вычисляет коммутант группы (подгруппу, порождённую коммутаторами).
+    def comutator(self) -> SubGroup[PermutationElement]:
+        ...  # TODO
 
-        Коммутант — это подгруппа, порождённая всеми элементами вида [a, b] = a*b*a^{-1}*b^{-1},
-        где a и b принадлежат группе.
+    def center(self) -> SubGroup[PermutationElement]:
+        if self._rank <= 2:
+            return SubGroup.trivial_all(self)
+        else:
+            return SubGroup.trivial_identity(self)
 
-        Returns:
-            SubGroup: Коммутант данной группы.
-        """
+    def __getitem__(self, item: list[int] | list[
+        tuple[int]] | str) -> PermutationElement:
 
-    @abstractmethod
-    def center(self) -> "SubGroup":
-        """
-        Вычисляет центр группы.
+        def check_correct(perm):
+            temp_perm = sorted(perm)
+            if not temp_perm == list(range(1, self._rank + 1)):
+                raise Exception("Перестановка не корректна")
 
-        Центр — это множество элементов, которые коммутируют со всеми элементами группы.
+        def list_of_tuple_perm_parse(perm) -> PermutationElement:
+            temp_perm = list(range(1, self._rank + 1))
+            perm_stat = list(range(1, self._rank + 1))
+            for e in perm:
+                if not len(set(e)) == len(e):
+                    raise Exception("Перестановка не корректна")
+                for i in range(0, len(e)):
+                    print(temp_perm)
+                    temp_perm[e[(i + 1) % len(e)] - 1] = perm_stat[e[i] - 1]
+                    print(temp_perm)
+            print(temp_perm)
+            check_correct(temp_perm)
+            return PermutationElement(temp_perm, self)
 
-        Returns:
-            SubGroup: Центр группы.
-        """
+        if isinstance(item, list) and all(isinstance(e, int) for e in item):
+            check_correct(item)
+            return PermutationElement(item, self)
+        elif (isinstance(item, list) and all(
+                isinstance(e, tuple) for e in item) and all(
+            all(isinstance(x, int) for x in e) for e in item)):
+            return list_of_tuple_perm_parse(item)
+        elif isinstance(item, str):
+            parser = PermutationParser()
+            perm = parser.parse(item)
+            return list_of_tuple_perm_parse(perm)
+        else:
+            raise Exception("Неверный формат индекса")
 
-    @abstractmethod
-    def __getitem__(self, item: T) -> E:
-        ...
+    def __contains__(self, item: PermutationElement) -> bool:
+        return item._reference_to_group == self
 
-    @abstractmethod
-    def __contains__(self, item: E) -> bool:
-        ...
-
-    @abstractmethod
-    def __iter__(self) -> Iterator[E]:
-        ...
+    def __iter__(self) -> Iterator[PermutationElement]:
+        return (self[list(per)] for per in
+                product(list(range(1, self._rank + 1)), repeat=self._rank) if
+                len(set(per)) == self._rank)
