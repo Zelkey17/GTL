@@ -74,7 +74,7 @@ class FiniteGroup[T, E](Group[T, E]):
         """
 
     @abstractmethod
-    def comutator(self) -> "SubGroup":
+    def comutator(self) -> SubGroup:
         """
         Вычисляет коммутант группы (подгруппу, порождённую коммутаторами).
 
@@ -86,7 +86,7 @@ class FiniteGroup[T, E](Group[T, E]):
         """
 
     @abstractmethod
-    def center(self) -> "SubGroup":
+    def center(self) -> SubGroup:
         """
         Вычисляет центр группы.
 

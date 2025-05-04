@@ -6,14 +6,16 @@ from sympy import isprime, Matrix
 
 from elements.Linear import MatrixElement
 from groups.finite_group import FiniteGroup
-
+from groups.symmetric_group import SymmetricGroup
 
 
 class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
 
     def __new__(cls, n:int, m:int):
-        # TODO n=2 m=2 return S3
-        # TODO n=1 m=p return Z(p-1)
+        if n==2 and m==2:
+            return SymmetricGroup(3)
+        if n==1 and isprime(m):
+            return CyclicGroup(m-1)
         return super().__new__(cls)
 
     def __init__(self, n: int, m: int):
@@ -63,10 +65,10 @@ class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
             if Matrix(M.tolist()).det() % self.m != 0:
                 yield MatrixElement(M, self)
 
-    def comutator(self) -> "SubGroup":
+    def comutator(self) -> SubGroup:
         return SubGroup.from_group(SL(n, m), self)
 
-    def center(self) -> "SubGroup":
+    def center(self) -> SubGroup:
         return SubGroup.from_predicate(
             lambda m: m.value == np.eye(self.n, dtype=int) * m.value[0][0],
             self)

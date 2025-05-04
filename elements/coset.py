@@ -1,14 +1,15 @@
 from typing import Set, TypeVar
 
 from elements.base import Element
+from groups.Factor import FactorGroup
 
-E = TypeVar('E', bound=Element)
 
-class CosetElement(Element[Set[E]]):
+class CosetElement[E](Element[Set[E]]):
     """
     Элемент фактор-группы в виде левого смежного класса aN.
     """
-    def __init__(self, representative: E, factor_group: "FactorGroup[E]"):
+
+    def __init__(self, representative: E, factor_group: FactorGroup[E]):
         self._rep = representative
         self._factor_group = factor_group
 
@@ -52,3 +53,6 @@ class CosetElement(Element[Set[E]]):
 
     def __repr__(self) -> str:
         return f"Coset({self._rep!r}N)"
+
+    def __hash__(self) -> int:
+        return hash(self._rep)

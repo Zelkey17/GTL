@@ -6,9 +6,6 @@ from elements.coset import CosetElement
 from groups.finite_group import FiniteGroup
 from groups.Subgroup import SubGroup
 
-E = TypeVar('E', bound=Element)
-
-
 class FactorGroup[E](FiniteGroup[set[E], CosetElement[E]]):
     def __init__(
             self,

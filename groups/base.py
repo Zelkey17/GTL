@@ -1,14 +1,9 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
 
 
-T = TypeVar('T')
-E = TypeVar('E', bound="Element")
-
-
-class Group(ABC, Generic[T, E]):
+class Group[T,E](ABC):
     """
     Абстрактный интерфейс для группы.
 

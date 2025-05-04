@@ -5,7 +5,7 @@ from groups.finite_group import FiniteGroup
 from groups.Subgroup import SubGroup
 
 
-class CyclicGroup(FiniteGroup):
+class CyclicGroup(FiniteGroup[int,IntegerElement]):
     """
     Класс, реализующий циклическую группу целых чисел по модулю заданного порядка.
 
@@ -20,6 +20,13 @@ class CyclicGroup(FiniteGroup):
     Исключения:
         Exception: Если порядок меньше или равен нулю.
     """
+
+    def __contains__(self, item:IntegerElement)->bool:
+        return isinstance(item, IntegerElement) and item.group == self
+
+    def __iter__(self)->Iterator[IntegerElement]:
+        return (IntegerElement(i,self) for i in range(len(self)))
+
     def __init__(self, order: int):
         if order <= 0:
             raise Exception("Порядок группы положительное число")
@@ -117,7 +124,7 @@ class CyclicGroup(FiniteGroup):
         """
         return True
 
-    def comutator(self) -> "SubGroup":
+    def comutator(self) -> SubGroup:
         """
         Возвращает коммутант группы (подгруппу, порождённую коммутаторами).
 
@@ -128,7 +135,7 @@ class CyclicGroup(FiniteGroup):
         """
         return SubGroup.trivial_identity(self)
 
-    def center(self) -> "SubGroup":
+    def center(self) -> SubGroup:
         """
         Возвращает центр группы.
 
@@ -141,6 +148,3 @@ class CyclicGroup(FiniteGroup):
 
     def __getitem__(self, item: int) -> IntegerElement:
         return IntegerElement(item%self._order, self)
-
-    def _all_elements(self):
-        return [self[i] for i in range(1, len(self)+1)]

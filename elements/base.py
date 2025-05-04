@@ -3,10 +3,8 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-T = TypeVar('T')
 
-
-class Element(ABC, Generic[T]):
+class Element[T](ABC,):
     """
     Абстрактный интерфейс для элемента группы.
 
