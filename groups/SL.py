@@ -1,10 +1,13 @@
 from itertools import product
-import numpy as np
-from sympy import Matrix, factorint, isprime
 from math import gcd
+
+import numpy as np
+from sympy import factorint, isprime, Matrix
 
 from elements.Linear import MatrixElement
 from groups.finite_group import FiniteGroup
+from groups.Subgroup import SubGroup
+from typing import Iterator
 
 
 class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
@@ -13,7 +16,14 @@ class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
     невырожденные матрицы n×n над Z/mZ с det ≡ 1 (mod m).
     """
 
-    def __new__(cls, n:int,m:int):
+    def __contains__(self, item: MatrixElement) -> bool:
+        return isinstance(item, MatrixElement) and item.group == self
+
+
+    def __iter__(self) -> Iterator[MatrixElement]:
+        return (i for i in self._all_elements())
+
+    def __new__(cls, n: int, m: int):
         # TODO n=2 m=2 return S3
         # TODO n=2 m=4 return A5
         # TODO n=4 m=2 return A8
@@ -41,7 +51,8 @@ class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
     def __getitem__(self, matrix: np.ndarray) -> MatrixElement:
         M = np.array(matrix, dtype=int) % self.m
         if M.shape != (self.n, self.n):
-            raise ValueError(f"Нужна матрица {self.n}×{self.n}, получили {M.shape}")
+            raise ValueError(
+                f"Нужна матрица {self.n}×{self.n}, получили {M.shape}")
         det_mod = Matrix(M.tolist()).det() % self.m
         if det_mod != 1:
             raise ValueError(f"det ≡ 1 (mod {self.m}), а det ≡ {det_mod}")
@@ -51,10 +62,10 @@ class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
         # |SL(n, m)| = m^{n(n-1)/2} * ∏_{i=2..n}(m^i - 1)
         total = 1
         for i in range(2, self.n + 1):
-            total *= (self.m**i - 1)
-        return (self.m**(self.n * (self.n - 1) // 2)) * total
+            total *= (self.m ** i - 1)
+        return (self.m ** (self.n * (self.n - 1) // 2)) * total
 
-    def all_elements(self):
+    def _all_elements(self):
         """Перечисление всех элементов SL(n, m) (для небольших n, m)."""
         for entries in product(range(self.m), repeat=self.n * self.n):
             M = np.array(entries, dtype=int).reshape(self.n, self.n) % self.m
@@ -110,15 +121,18 @@ class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
         """
         if self.n >= 2:
             return SubGroup.from_group(self, self)
-        return SubGroup.from_predicate(lambda g: True, self)
+        return SubGroup.trivial_identity(self)
 
     def center(self) -> SubGroup:
         """
         Центр: скалярные матрицы λI, где λ^n ≡ 1 (mod m).
         """
+
         def pred(g: MatrixElement) -> bool:
             M = g.value
-            if not np.array_equal(M, np.eye(self.n, dtype=int) * (M[0,0] % self.m)):
+            if not np.array_equal(M, np.eye(self.n, dtype=int) * (
+                    M[0, 0] % self.m)):
                 return False
-            return pow(int(M[0,0]), self.n, self.m) == 1
+            return pow(int(M[0, 0]), self.n, self.m) == 1
+
         return SubGroup.from_predicate(pred, self)

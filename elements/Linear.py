@@ -1,6 +1,6 @@
 import numpy as np
 
-from base import Element
+from elements.base import Element
 
 
 class MatrixElement(Element[np.ndarray]):
@@ -37,3 +37,6 @@ class MatrixElement(Element[np.ndarray]):
 
     def __repr__(self) -> str:
         return "Matrix:\n" + repr(self._matrix)
+
+    def __hash__(self):
+        return hash(self._matrix.tobytes())
