@@ -5,36 +5,6 @@ from math import gcd
 
 from elements.Linear import MatrixElement
 from groups.finite_group import FiniteGroup
-from groups.infinite_group import InfiniteGroup
-from groups.subgroup import SubGroup
-
-
-class SLnR(InfiniteGroup[np.ndarray, MatrixElement]):
-    """
-    Специальная линейная группа SL(n, R):
-    невырожденные вещественные матрицы размера n×n с det = 1.
-    """
-    def __init__(self, n: int):
-        self.n = n
-
-    def identity(self) -> MatrixElement:
-        I = np.eye(self.n, dtype=float)
-        return MatrixElement(I, self)
-
-    def op(self, a: MatrixElement, b: MatrixElement) -> MatrixElement:
-        return MatrixElement(a.value @ b.value, self)
-
-    def inverse(self, a: MatrixElement) -> MatrixElement:
-        return MatrixElement(np.linalg.inv(a.value), self)
-
-    def __getitem__(self, matrix: np.ndarray) -> MatrixElement:
-        M = np.array(matrix, dtype=float)
-        if M.shape != (self.n, self.n):
-            raise ValueError(f"Нужна матрица {self.n}×{self.n}, получили {M.shape}")
-        det = np.linalg.det(M)
-        if not np.isclose(det, 1.0, atol=1e-8):
-            raise ValueError(f"Детерминант должен быть 1, а det = {det}")
-        return MatrixElement(M, self)
 
 
 class SLnm(FiniteGroup[np.ndarray, MatrixElement]):

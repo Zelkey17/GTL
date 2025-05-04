@@ -6,30 +6,7 @@ from sympy import isprime, Matrix
 
 from elements.Linear import MatrixElement
 from groups.finite_group import FiniteGroup
-from groups.infinite_group import InfiniteGroup
 
-
-class GLnR(InfiniteGroup[np.ndarray, MatrixElement]):
-
-    def __init__(self, n: int):
-        self.n = n
-
-    def identity(self) -> MatrixElement:
-        return MatrixElement(np.eye(self.n), self)
-
-    def op(self, a: MatrixElement, b: MatrixElement) -> MatrixElement:
-        return MatrixElement(a.value @ b.value, self)
-
-    def inverse(self, a: MatrixElement) -> MatrixElement:
-        return MatrixElement(np.linalg.inv(a.value), self)
-
-    def __getitem__(self, matrix: np.ndarray) -> MatrixElement:
-        M = np.array(matrix, dtype=float)
-        if M.shape != (self.n, self.n):
-            raise ValueError(f"Ожидается матрица {self.n}×{self.n}")
-        if abs(np.linalg.det(M)) < 1e-12:
-            raise ValueError("Сингулярная матрица не в GL(n,R)")
-        return MatrixElement(M, self)
 
 
 class GLnm(FiniteGroup[np.ndarray, MatrixElement]):
