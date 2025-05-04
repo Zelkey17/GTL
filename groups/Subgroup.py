@@ -4,9 +4,7 @@ from itertools import product
 
 from groups.finite_group import FiniteGroup
 
-E = TypeVar('E', bound="Element")
-
-class SubGroup(Generic[E]):
+class SubGroup[E]():
     """
     Класс, представляющий подгруппу группы G.
 

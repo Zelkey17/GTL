@@ -1,15 +1,14 @@
+import math
 from itertools import product
 from typing import Iterator
 
-from elements.permutation_parser import PermutationParser
 from elements.permutation_element import PermutationElement
-import math
-
-from groups.Subgroup import SubGroup
+from elements.permutation_parser import PermutationParser
 from groups.finite_group import FiniteGroup
+from groups.Subgroup import SubGroup
 
 
-class SymmetricGroup(FiniteGroup):
+class SymmetricGroup(FiniteGroup[list[int], PermutationElement]):
 
     def __init__(self, rank: int):
         if rank <= 0:
@@ -21,14 +20,14 @@ class SymmetricGroup(FiniteGroup):
 
     def op(self, a: PermutationElement,
            b: PermutationElement) -> PermutationElement:
-        perm = [b._value[a._value[i] - 1] for i in range(0, self._rank)]
+        perm = [b.value[a.value[i] - 1] for i in range(0, self._rank)]
         return PermutationElement(perm, self)
 
     def inverse(self, a: PermutationElement) -> PermutationElement:
         b = list(range(self._rank))
         perm = [0] * self._rank
         for i in range(self._rank):
-            perm[a._value[i] - 1] = i + 1
+            perm[a.value[i] - 1] = i + 1
         return PermutationElement(perm, self)
 
     def is_lagrangian(self) -> bool:
@@ -92,7 +91,7 @@ class SymmetricGroup(FiniteGroup):
             raise Exception("Неверный формат индекса")
 
     def __contains__(self, item: PermutationElement) -> bool:
-        return item._reference_to_group == self
+        return item.group == self
 
     def __iter__(self) -> Iterator[PermutationElement]:
         return (self[list(per)] for per in

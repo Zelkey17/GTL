@@ -24,7 +24,8 @@ class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
         return (i for i in self._all_elements())
 
     def __new__(cls, n: int, m: int):
-        # TODO n=2 m=2 return S3
+        if n==2 and m==2:
+            return SymmetricGroup(3)
         # TODO n=2 m=4 return A5
         # TODO n=4 m=2 return A8
         return super().__new__(cls)
