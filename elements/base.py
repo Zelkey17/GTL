@@ -4,52 +4,105 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
 
-class Element[T](ABC,):
+class Element[T](ABC):
     """
     Абстрактный интерфейс для элемента группы.
 
     Любой конкретный элемент
     должен наследовать этот интерфейс и реализовать базовые операции.
+
+    Attributes:
+        _value (T): Внутреннее представление элемента.
     """
 
     @property
     @abstractmethod
     def value(self) -> T:
-        """Внутреннее представление элемента (например, int, tuple, numpy.ndarray)."""
+        """
+        Внутреннее представление элемента.
+
+        Returns:
+            T: Типизированное значение, например int, tuple или numpy.ndarray.
+        """
         ...
 
     @property
     @abstractmethod
     def group(self) -> Group[T, Element]:  # type: ignore[name-defined]
-        """Ссылка на группу, к которой принадлежит элемент."""
+        """
+        Ссылка на объект группы, к которой принадлежит данный элемент.
+
+        Returns:
+            Group[T, Element]: Экземпляр группы данного элемента.
+        """
         ...
 
     @abstractmethod
     def __eq__(self, other: object) -> bool:
-        """Проверка равенства двух элементов той же группы."""
+        """
+        Проверка равенства двух элементов одной группы.
+
+        Args:
+            other (object): Другой объект для сравнения.
+
+        Returns:
+            bool: True, если элементы равны в контексте одной группы.
+        """
         ...
 
     @abstractmethod
     def __mul__(self, other: Element[T]) -> Element[T]:
-        """Групповая операция: a * b (элементы одной группы)."""
+        """
+        Групповая операция умножения (композиции) двух элементов.
+
+        Args:
+            other (Element[T]): Элемент той же группы.
+
+        Returns:
+            Element[T]: Результат операции a * b.
+        """
         ...
 
     @abstractmethod
     def __pow__(self, exponent: int) -> Element[T]:
-        """Возведение элемента в целую степень: a ** n."""
+        """
+        Возведение элемента в целую степень.
+
+        Args:
+            exponent (int): Целая степень, положительная или отрицательная.
+
+        Returns:
+            Element[T]: Результат a ** n.
+        """
         ...
 
     @abstractmethod
     def inv(self) -> Element[T]:
-        """Обратный элемент: a.inv() такое, что a * a.inv() == identity."""
+        """
+        Получение обратного (инверсного) элемента.
+
+        Returns:
+            Element[T]: Обратный элемент, удовлетворяющий a * a.inv() == identity.
+        """
         ...
 
     @abstractmethod
     def __repr__(self) -> str:
-        """Строковое представление элемента (для отладки)."""
+        """
+        Строковое представление элемента для отладки.
+
+        Returns:
+            str: Человекочитаемый формат описания элемента.
+        """
         ...
 
     @abstractmethod
-    def __hash__(self):
+    def __hash__(self) -> int:
+        """
+        Хэш функции, позволяющий использовать элемент в множествах или в качестве ключа словаря.
+
+        Returns:
+            int: Целочисленный хэш этого элемента.
+        """
         ...
 

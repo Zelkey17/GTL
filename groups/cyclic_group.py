@@ -1,150 +1,175 @@
-from elements.element import IntegerElement
+from __future__ import annotations
+
+from collections.abc import Iterator
 import sympy
 
+from elements.integer import IntegerElement
 from groups.finite_group import FiniteGroup
-from groups.Subgroup import SubGroup
 
 
-class CyclicGroup(FiniteGroup[int,IntegerElement]):
+
+class CyclicGroup(FiniteGroup[int, IntegerElement]):
     """
-    Класс, реализующий циклическую группу целых чисел по модулю заданного порядка.
+    Циклическая группа целых чисел по модулю заданного порядка.
 
-    Циклическая группа — это группа, все элементы которой могут быть получены
-    путем последовательного применения групповой операции к образующему элементу.
-    Данная реализация использует целые числа от 0 до (порядок - 1) с операцией
-    сложения по модулю порядка.
+    Все элементы представляются как целые числа 0..order-1, операция — сложение по модулю order.
 
-    Аргументы:
-        order (int): Порядок группы (количество элементов). Должен быть положительным.
-
-    Исключения:
-        Exception: Если порядок меньше или равен нулю.
+    Attributes:
+        _order (int): Порядок группы (количество элементов).
     """
-
-    def __contains__(self, item:IntegerElement)->bool:
-        return isinstance(item, IntegerElement) and item.group == self
-
-    def __iter__(self)->Iterator[IntegerElement]:
-        return (IntegerElement(i,self) for i in range(len(self)))
 
     def __init__(self, order: int):
+        """
+        Инициализирует циклическую группу.
+
+        Args:
+            order (int): Порядок группы. Должен быть положительным числом.
+
+        Raises:
+            ValueError: Если order <= 0.
+        """
         if order <= 0:
-            raise Exception("Порядок группы положительное число")
+            raise ValueError("Порядок группы должен быть положительным числом")
         self._order = order
+
+    def __contains__(self, item: IntegerElement) -> bool:
+        """
+        Проверяет, принадлежит ли элемент этой группе.
+
+        Args:
+            item (IntegerElement): Элемент для проверки.
+
+        Returns:
+            bool: True, если item.group == self.
+        """
+        return isinstance(item, IntegerElement) and item.group == self
+
+    def __iter__(self) -> Iterator[IntegerElement]:
+        """
+        Итератор по всем элементам группы.
+
+        Returns:
+            Iterator[IntegerElement]: Элементы от 0 до order-1.
+        """
+        return (IntegerElement(i, self) for i in range(self._order))
+
+    def __len__(self) -> int:
+        """
+        Количество элементов группы.
+
+        Returns:
+            int: Порядок группы.
+        """
+        return self._order
 
     def identity(self) -> IntegerElement:
         """
-        Возвращает нейтральный элемент группы (ноль по модулю порядка).
+        Нейтральный элемент группы.
 
-        Пример:
-            Для порядка 5: identity() -> 0.
-
-        Возвращает:
-            IntegerElement: Нулевой элемент.
+        Returns:
+            IntegerElement: Элемент 0 (модуль order).
         """
         return IntegerElement(0, self)
 
     def op(self, a: IntegerElement, b: IntegerElement) -> IntegerElement:
         """
-        Выполняет групповую операцию (сложение по модулю порядка).
+        Групповая операция: сложение по модулю order.
 
-        Аргументы:
-            a (IntegerElement): Первый элемент.
-            b (IntegerElement): Второй элемент.
+        Args:
+            a (IntegerElement): Первый операнд.
+            b (IntegerElement): Второй операнд.
 
-        Возвращает:
-            IntegerElement: Результат сложения элементов по модулю порядка.
+        Returns:
+            IntegerElement: (a.value + b.value) % order.
         """
         return IntegerElement((a.value + b.value) % self._order, self)
 
     def inverse(self, a: IntegerElement) -> IntegerElement:
         """
-        Возвращает обратный элемент для `a`.
+        Обратный элемент.
 
-        Аргументы:
-            a (IntegerElement): Элемент, для которого ищется обратный.
+        Args:
+            a (IntegerElement): Элемент, для которого ищем обратный.
 
-        Возвращает:
-            IntegerElement: Обратный элемент.
+        Returns:
+            IntegerElement: (-a.value) % order.
         """
-        return IntegerElement(-a.value % self._order,self)
-
-    def __len__(self):
-        """
-        Возвращает порядок группы (количество элементов).
-
-        Возвращает:
-            int: Порядок группы.
-        """
-        return self._order
+        return IntegerElement((-a.value) % self._order, self)
 
     def is_lagrangian(self) -> bool:
         """
-        Проверяет, удовлетворяет ли группа обратной теореме Лагранжа.
+        Проверяет теорему Лагранжа.
 
-        Для циклических групп всегда верно, так как для любого делителя порядка
-        существует подгруппа такого порядка.
+        Для циклических групп всегда True.
 
-        Возвращает:
-            bool: Всегда True.
+        Returns:
+            bool: True.
         """
         return True
 
     def is_abelian(self) -> bool:
         """
-        Проверяет, является ли группа абелевой.
+        Проверяет, является ли группа коммутативной.
 
-        Все циклические группы абелевы.
+        CyclicGroup всегда абелева.
 
-        Возвращает:
-            bool: Всегда True.
+        Returns:
+            bool: True.
         """
         return True
 
     def is_simple(self) -> bool:
         """
-        Проверяет, является ли группа простой (не имеет нетривиальных нормальных подгрупп).
+        Проверяет простоту группы.
 
-        Для циклических групп группа является простой тогда и только тогда,
-        когда её порядок — простое число или 1.
+        Возвращает True, если order == 1 или order — простое число.
 
-        Возвращает:
-        bool: True, если порядок группы является простым числом или 1, False в противном случае.
+        Returns:
+            bool: True, если простая.
         """
         return self._order == 1 or sympy.isprime(self._order)
 
     def is_solvable(self) -> bool:
         """
-        Проверяет, является ли группа разрешимой.
+        Проверяет разрешимость группы.
 
         Все абелевы группы разрешимы.
 
-        Возвращает:
-            bool: Всегда True.
+        Returns:
+            bool: True.
         """
         return True
 
-    def comutator(self) -> SubGroup:
+    def comutator(self) -> SubGroup[int, IntegerElement]:
         """
-        Возвращает коммутант группы (подгруппу, порождённую коммутаторами).
+        Возвращает коммутант группы — подгруппу, порождённую всеми коммутаторами.
 
-        Для абелевых групп коммутант тривиален.
+        Для абелевых групп коммутант тривиален (только нейтральный элемент).
 
-        Возвращает:
-            SubGroup: Тривиальная подгруппа.
+        Returns:
+            SubGroup[int, IntegerElement]: Тривиальная подгруппа.
         """
         return SubGroup.trivial_identity(self)
 
-    def center(self) -> SubGroup:
+    def center(self) -> SubGroup[int, IntegerElement]:
         """
-        Возвращает центр группы.
+        Возвращает центр группы — элементы, коммутирующие со всеми остальными.
 
-        Для абелевых групп центр совпадает с самой группой.
+        Для абелевых групп центр совпадает со всей группой.
 
-        Возвращает:
-            SubGroup: Тривиальная подгруппа.
+        Returns:
+            SubGroup[int, IntegerElement]: Подгруппа, содержащая все элементы группы.
         """
         return SubGroup.trivial_all(self)
 
     def __getitem__(self, item: int) -> IntegerElement:
-        return IntegerElement(item%self._order, self)
+        """
+        Доступ к элементу по его целочисленному представлению.
+
+        Args:
+            item (int): Целочисленное значение.
+
+        Returns:
+            IntegerElement: Элемент с value == item % order.
+        """
+        return IntegerElement(item % self._order, self)
