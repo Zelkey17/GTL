@@ -147,7 +147,7 @@ class AlternatingGroup(FiniteGroup[List[int], PermutationElement]):
         Коммутант (производная группа) A_n.
 
         Для n ≤ 3 A_n абелева ⇒ коммутант тривиален.
-        Для n > 4 A_n проста ⇒ коммутант = сама группа.
+        Для n ≥ 4 A_n проста ⇒ коммутант = сама группа.
 
         Returns:
             SubGroup[PermutationElement]: Коммутант A_n.
