@@ -13,7 +13,7 @@ from groups.Subgroup import SubGroup
 
 
 
-class SymmetricGroup(FiniteGroup[List[int], PermutationElement]):
+class AlternatingGroup(FiniteGroup[List[int], PermutationElement]):
     """
     Группа чётных перестановок ранга n.
 
@@ -148,7 +148,7 @@ class SymmetricGroup(FiniteGroup[List[int], PermutationElement]):
 
         Для n ≤ 3 A_n абелева ⇒ коммутант тривиален.
         Для n > 4 A_n проста ⇒ коммутант = сама группа.
-        Для n = 4 не реализовано.
+        Для n = 4 коммутант не реализован
 
         Returns:
             SubGroup[PermutationElement]: Коммутант A_n.
