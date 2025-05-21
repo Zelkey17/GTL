@@ -31,14 +31,14 @@ class SymmetricGroup(FiniteGroup[List[int], PermutationElement]):
             raise ValueError("Ранг группы должен быть положительным числом")
         self._rank = rank
 
-    def identity(self) -> List[int]:
+    def identity(self) -> PermutationElement:
         """
         Нейтральный элемент группы — тождественная перестановка.
 
         Returns:
             List[int]: Список [1, 2, ..., n].
         """
-        return list(range(1, self._rank + 1))
+        return PermutationElement(list(range(1, self._rank + 1)), self)
 
     def op(self, a: PermutationElement,
            b: PermutationElement) -> PermutationElement:
