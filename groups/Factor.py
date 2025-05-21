@@ -39,7 +39,7 @@ class FactorGroup[E](FiniteGroup[set[E], CosetElement[E]]):
                 yield repr_coset
 
 
-    def __init__(self, group: FiniteGroup, subgroup: SubGroup[E]):
+    def __init__(self, group: FiniteGroup, subgroup: SubGroup[E, FiniteGroup]):
         """
         Инициализирует фактор-группу по группе и её нормальной подгруппе.
 
@@ -97,7 +97,7 @@ class FactorGroup[E](FiniteGroup[set[E], CosetElement[E]]):
         :return: Множество элементов фактор-группы.
         """
         seen: Set[CosetElement] = set()
-        for g_el in self._group._all_elements():
+        for g_el in self._group:
             cos = CosetElement(g_el, self)
             seen.add(cos)
         return seen
@@ -159,14 +159,14 @@ class FactorGroup[E](FiniteGroup[set[E], CosetElement[E]]):
             chain(comm.elements(), self._subgroup.elements()), self._group)
         return FactorGroup(self._group, combined).subgroup
 
-    def center(self) -> SubGroup[CosetElement]:
+    def center(self) -> SubGroup[CosetElement,FiniteGroup]:
         """
         Центр фактор-группы: элементы gN такие, что ∀g'∈G: g g' g⁻¹ g'⁻¹ ∈ N.
 
         :return: Подгруппа центра в фактор-группе.
         """
         def predicate(cos: CosetElement) -> bool:
-            for g_el in self._group._all_elements():
+            for g_el in self._group:
                 lhs = cos.representative
                 rhs = self._group.op(g_el, cos.representative)
                 if self._group.op(lhs, g_el.inv()) not in self._subgroup.elements():

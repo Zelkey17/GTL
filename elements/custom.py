@@ -1,10 +1,7 @@
 from __future__ import annotations
 
-from typing import Generic, TypeVar
-
 from elements.base import Element
 from groups.base import Group
-
 
 
 class CustomElement[T](Element[T]):

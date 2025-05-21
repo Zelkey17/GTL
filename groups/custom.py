@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Callable, Dict, Iterator, TypeVar, Generic
+from typing import Callable, Dict, Iterator, TypeVar
 
 from elements.custom import CustomElement
 from groups.finite_group import FiniteGroup

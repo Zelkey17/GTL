@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import List, Tuple
-from lark import Lark, Transformer, exceptions
+from typing import List, Tuple, cast
+
+from lark import Lark, Transformer
 
 
 class PermutationParser:
@@ -31,12 +32,13 @@ class PermutationParser:
             %import common.WS
             %ignore WS                    // игнорируем пробельные символы
         """
-        # Используем LALR-парсер и свой Transformer для получения Python-структур
+        # Инициализируем парсер без трансформера
         self._parser = Lark(
             self._grammar,
             parser='lalr',
-            transformer=self._ListTransformer()
         )
+        # Отдельно создаём трансформер
+        self._transformer = self._ListTransformer()
 
     class _ListTransformer(Transformer):
         """
@@ -44,53 +46,20 @@ class PermutationParser:
         """
 
         def number(self, token_list: List[str]) -> int:
-            """
-            Преобразует токен числа в int.
-
-            Args:
-                token_list (List[str]): Список токенов (обычно один элемент).
-
-            Returns:
-                int: Преобразованное целое число.
-            """
             return int(token_list[0])
 
         def group(self, items: List[int]) -> Tuple[int, ...]:
-            """
-            Преобразует содержимое одной группы в кортеж.
-
-            Args:
-                items (List[int]): Список чисел в текущих скобках.
-
-            Returns:
-                Tuple[int, ...]: Кортеж чисел группы.
-            """
             return tuple(items)
 
         def start(self, groups: List[Tuple[int, ...]]) -> List[Tuple[int, ...]]:
-            """
-            Объединяет все группы в итоговый список.
-
-            Args:
-                groups (List[Tuple[int, ...]]): Список всех кортежей.
-
-            Returns:
-                List[Tuple[int, ...]]: Итоговый список кортежей перестановки.
-            """
             return list(groups)
 
     def parse(self, input_str: str) -> List[Tuple[int, ...]]:
         """
         Парсит строку с записью перестановки и возвращает список кортежей.
-
-        Args:
-            input_str (str): Строка вида "(1,2,3)(4,5)()".
-
-        Returns:
-            List[Tuple[int, ...]]: Список кортежей, соответствующих каждой группе.
-
-        Raises:
-            exceptions.LarkError: При ошибках синтаксического разбора.
         """
-        # Передаём строку парсеру и возвращаем результат трансформации
-        return self._parser.parse(input_str)
+        # Сначала получаем дерево разбора
+        tree = self._parser.parse(input_str)
+        # Затем трансформируем и явно приводим тип
+        result = self._transformer.transform(tree)
+        return cast(List[Tuple[int, ...]], result)
