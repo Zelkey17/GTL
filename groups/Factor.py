@@ -15,6 +15,30 @@ class FactorGroup[E](FiniteGroup[set[E], CosetElement[E]]):
     Элементы фактор-группы — смежные классы.
     """
 
+    def __contains__(self, item: CosetElement[E]) -> bool:
+        """
+        Проверяет, принадлежит ли смежный класс фактор-группе.
+
+        :param item: Смежный класс.
+        :return: True, если это корректный элемент этой фактор-группы.
+        """
+        return isinstance(item, CosetElement) and item.group is self
+
+    def __iter__(self) -> Iterator[CosetElement[E]]:
+        """
+        Итератор по представителям смежных классов G/N.
+
+        :return: Итератор по элементам фактор-группы.
+        """
+        seen_reprs = set()
+        for g in self._group:
+            repr_coset = CosetElement(g, self)
+            # Используем set, чтобы избежать дубликатов
+            if repr_coset not in seen_reprs:
+                seen_reprs.add(repr_coset)
+                yield repr_coset
+
+
     def __init__(self, group: FiniteGroup, subgroup: SubGroup[E]):
         """
         Инициализирует фактор-группу по группе и её нормальной подгруппе.

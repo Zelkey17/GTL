@@ -142,7 +142,7 @@ class AlternatingGroup(FiniteGroup[List[int], PermutationElement]):
         """
         return (math.factorial(self._rank) + 1) // 2
 
-    def comutator(self) -> SubGroup[PermutationElement]:
+    def comutator(self) -> SubGroup[PermutationElement,AlternatingGroup]:
         """
         Коммутант (производная группа) A_n.
 
@@ -162,7 +162,7 @@ class AlternatingGroup(FiniteGroup[List[int], PermutationElement]):
             return SubGroup.trivial_all(self)
         raise NotImplementedError("comutator не реализован для n = 4")
 
-    def center(self) -> SubGroup[PermutationElement]:
+    def center(self) -> SubGroup[PermutationElement,AlternatingGroup]:
         """
         Центр группы A_n.
 
