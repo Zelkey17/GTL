@@ -11,12 +11,12 @@ class TestCyclicGroup(unittest.TestCase):
     def test_negative_order_raises_exception(self):
         with self.assertRaises(Exception) as context:
             CyclicGroup(-1)
-        self.assertEqual(str(context.exception), "Порядок группы положительное число")
+        self.assertEqual(str(context.exception), "Порядок группы должен быть положительным числом")
 
     def test_zero_order_raises_exception(self):
         with self.assertRaises(Exception) as context:
             CyclicGroup(0)
-        self.assertEqual(str(context.exception), "Порядок группы положительное число")
+        self.assertEqual(str(context.exception), "Порядок группы должен быть положительным числом")
 
     def test_identity(self):
         self.assertEqual(self.group_order_1.identity().value, 0)
