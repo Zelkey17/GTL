@@ -4,6 +4,7 @@ from __future__ import annotations
 from groups.SL import SLnm
 from groups.GL import GLnm
 from groups.Factor import FactorGroup
+from elements.linear import MatrixElement
 
 
 
@@ -21,7 +22,7 @@ class PSLnm:
         psl = PSLnm(n, m)  # вернёт FactorGroup для SL(n,m) по центру
     """
 
-    def __new__(cls, n: int, m: int) -> FactorGroup[Any, Any]:
+    def __new__(cls, n: int, m: int)->FactorGroup[MatrixElement]:
         """
         Создает фактор-группу PSL(n, m).
 
@@ -55,7 +56,7 @@ class PGLnm:
         pgl = PGLnm(n, m)  # вернёт FactorGroup для GL(n,m) по центру
     """
 
-    def __new__(cls, n: int, m: int) -> FactorGroup[Any, Any]:
+    def __new__(cls, n: int, m: int) -> FactorGroup[MatrixElement]:
         """
         Создает фактор-группу PGL(n, m).
 

@@ -1,16 +1,59 @@
 from __future__ import annotations
 
-from typing import Set, Callable, Iterable
+from typing import Iterator, Set, Callable, Iterable
 from itertools import product
+from finite_group import FiniteGroup
 
 
-class SubGroup[E,G]:
+class SubGroup[E,G](FiniteGroup):
     """
     Класс, представляющий подгруппу конечной группы G.
 
     Подгруппа определяется как непустое множество, замкнутое относительно
     групповой операции и обращения, и содержащее нейтральный элемент.
     """
+
+    def is_abelian(self) -> bool:
+        return self.to_group().is_abelian()
+
+    def is_simple(self) -> bool:
+        return self.to_group().is_simple()
+
+    def is_solvable(self) -> bool:
+        return self.to_group().is_solvable()
+
+    def comutator(self) -> SubGroup[E,G]:
+        return self.to_group().comutator()
+
+    def center(self) -> SubGroup[E, G]:
+        return self.to_group().center()
+
+    def __iter__(self) -> Iterator[E]:
+        """Итератор по элементам подгруппы."""
+        return iter(self._elements)
+
+    def __contains__(self, item: E) -> bool:
+        """Принадлежит ли элемент подгруппе."""
+        return item in self._elements
+
+    def __getitem__(self, item: T) -> E:
+        """Получить элемент по значению (если тип E поддерживает сравнение)."""
+        for el in self._elements:
+            if el == item:
+                return el
+        raise KeyError(f"Element {item!r} not in subgroup")
+
+    def identity(self) -> E:
+        return self.group.identity()
+
+    def op(self, a: E, b: E) -> E:
+        return self.group.op(a, b)
+
+    def inverse(self, a: E) -> E:
+        return self.group.inverse(a)
+
+    def is_lagrangian(self) -> bool:
+        return self.to_group().is_lagrangian()
 
     def __init__(self, group: G, elements: Set[E]):
         self._group = group

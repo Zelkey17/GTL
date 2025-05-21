@@ -229,7 +229,7 @@ class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
         """
         return self.n == 1 or (self.n == 2 and self.m in (2, 3))
 
-    def comutator(self) -> SubGroup[np.ndarray, MatrixElement]:
+    def comutator(self) -> SubGroup[MatrixElement, SLnm]:
         """
         Коммутант (производная группа).
 
@@ -243,7 +243,7 @@ class SLnm(FiniteGroup[np.ndarray, MatrixElement]):
             return SubGroup.from_group(self, self)
         return SubGroup.trivial_identity(self)
 
-    def center(self) -> SubGroup[np.ndarray, MatrixElement]:
+    def center(self) -> SubGroup[MatrixElement, SLnm]:
         """
         Центр группы — все скалярные матрицы λIₙ, где λ^n ≡ 1 (mod m).
 
