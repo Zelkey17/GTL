@@ -79,32 +79,126 @@ class CustomGroup[T]( FiniteGroup[T, CustomElement[T]]):
         return len(self._index)
 
     def is_lagrangian(self) -> bool:
-        """Проверяет, удовлетворяет ли группа теореме Лагранжа (заглушка)."""
-        return True  # TODO: реализовать
+        """
+        Проверяет, что для каждой конечной подгруппы H порядок H делит порядок G (лемма Лагранжа).
+
+        Returns:
+            bool: True, если для всех подгрупп H |H| делит |G|, иначе False.
+        """
+        n = len(self)
+        elems = list(self)
+        identity = self.identity()
+        # перебор всех подгрупп через все подмножества
+        for r in range(1, n+1):
+            for subset in combinations(elems, r):
+                S = set(subset)
+                if identity not in S:
+                    continue
+                # проверка подгруппы
+                valid = True
+                for a in S:
+                    if self.inverse(a) not in S:
+                        valid = False
+                        break
+                    for b in S:
+                        if self.op(a, b) not in S:
+                            valid = False
+                            break
+                    if not valid:
+                        break
+                if not valid:
+                    continue
+                if n % len(S) != 0:
+                    return False
+        return True
 
     def is_abelian(self) -> bool:
-        """Проверяет, коммутативна ли группа."""
-        for el in self._index.values():
-            for el2 in self._index.values():
-                if self._op(el, el2) != self._op(el2, el):
+        """
+        Проверяет коммутативность группы (абелевость).
+
+        Returns:
+            bool: True, если для всех a, b в G выполняется a·b = b·a, иначе False.
+        """
+        for a in self:
+            for b in self:
+                if self.op(a, b) != self.op(b, a):
                     return False
         return True
 
     def is_simple(self) -> bool:
-        """Проверяет, является ли группа простой (заглушка)."""
-        return True  # TODO: реализовать
+        """
+        Проверяет, что группа простая, то есть не имеет нетривиальных нормальных подгрупп.
+
+        Returns:
+            bool: True, если простая, иначе False.
+        """
+        n = len(self)
+        identity = self.identity()
+        elems = list(self)
+        for r in range(2, n):
+            for subset in combinations(elems, r):
+                S = _closure(self, set(subset))
+                if identity not in S or len(S) == n:
+                    continue
+                # проверка нормальности: gSg^{-1} = S
+                normal = True
+                for g in self:
+                    for h in S:
+                        ghg = self.op(self.op(g, h), self.inverse(g))
+                        if ghg not in S:
+                            normal = False
+                            break
+                    if not normal:
+                        break
+                if normal:
+                    return False
+        return True
 
     def is_solvable(self) -> bool:
-        """Проверяет, является ли группа разрешимой (заглушка)."""
-        return True  # TODO: реализовать
+        """
+        Проверяет, что группа разрешима, т.е. имеет конечную серию коммутантов, сходящуюся к тривиальной группе.
+
+        Returns:
+            bool: True, если разрешима, иначе False.
+        """
+        current = self
+        while True:
+            comm = current.comutator()
+            if len(comm) == 1:
+                return True
+            if len(comm) == len(current):
+                return False
+            current = comm
 
     def comutator(self) -> SubGroup:
-        """Возвращает коммутаторную подгруппу (заглушка)."""
-        return SubGroup.trivial_identity(self)  # TODO
+        """
+        Возвращает коммутантную подгруппу, порожденную всеми коммутаторами [a, b] = a^{-1} b^{-1} a b.
+
+        Returns:
+            SubGroup: Коммутантная подгруппа.
+        """
+        comms: Set[CustomElement[T]] = set()
+        for a in self:
+            for b in self:
+                inv_a = self.inverse(a)
+                inv_b = self.inverse(b)
+                comm = self.op(self.op(inv_a, inv_b), self.op(a, b))
+                comms.add(comm)
+        return SubGroup.generated_by(comms,self)
 
     def center(self) -> SubGroup:
-        """Возвращает центр группы (заглушка)."""
-        return SubGroup.trivial_all(self)  # TODO
+        """
+        Возвращает центр группы, состоящий из всех элементов, коммутирующих со всеми элементами группы.
+
+        Returns:
+            SubGroup: Центр группы.
+        """
+        centers: Set[CustomElement[T]] = set()
+        for a in self:
+            if all(self.op(a, b) == self.op(b, a) for b in self):
+                centers.add(a)
+        return SubGroup(self, centers)
+
 
     def __getitem__(self, item: I) -> CustomElement[T]:
         """Получить элемент по ключу в словаре index."""
