@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Iterator, Set, Callable, Iterable
 from itertools import product
-from finite_group import FiniteGroup
+from groups.finite_group import FiniteGroup
 
 
 class SubGroup[E,G](FiniteGroup):
