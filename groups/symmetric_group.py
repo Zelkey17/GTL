@@ -135,7 +135,7 @@ class SymmetricGroup(FiniteGroup[List[int], PermutationElement]):
         """
         return math.factorial(self._rank)
 
-    def comutator(self) -> SubGroup[PermutationElement]:
+    def comutator(self) -> SubGroup[PermutationElement,SymmetricGroup]:
         """
         Коммутант (производная группа) S_n.
 
@@ -146,7 +146,7 @@ class SymmetricGroup(FiniteGroup[List[int], PermutationElement]):
         """
         raise NotImplementedError("Метод comutator для SymmetricGroup ещё не реализован")
 
-    def center(self) -> SubGroup[PermutationElement]:
+    def center(self) -> SubGroup[PermutationElement,SymmetricGroup]:
         """
         Центр группы — элементы, коммутирующие со всей группой.
 
