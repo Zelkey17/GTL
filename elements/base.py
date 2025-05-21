@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
 
 
 class Element[T](ABC):
@@ -10,9 +9,6 @@ class Element[T](ABC):
 
     Любой конкретный элемент
     должен наследовать этот интерфейс и реализовать базовые операции.
-
-    Attributes:
-        _value (T): Внутреннее представление элемента.
     """
 
     @property
