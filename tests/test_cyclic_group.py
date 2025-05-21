@@ -1,57 +1,43 @@
 import unittest
-from ..groups.cyclic_group import CyclicGroup, IntegerElement
+from groups.cyclic_group import CyclicGroup, IntegerElement
 
 class TestCyclicGroup(unittest.TestCase):
-    """
-    Тесты для циклической группы
-    """
     def setUp(self):
-        """Создаём тестовые группы разных порядков перед каждым тестом."""
-        self.group_order_1 = CyclicGroup(1)  # Тривиальная группа
-        self.group_order_2 = CyclicGroup(2)  # Простая группа
-        self.group_order_4 = CyclicGroup(4)  # Непростая группа
-        self.group_order_5 = CyclicGroup(5)  # Простая группа
+        self.group_order_1 = CyclicGroup(1)
+        self.group_order_2 = CyclicGroup(2)
+        self.group_order_4 = CyclicGroup(4)
+        self.group_order_5 = CyclicGroup(5)
 
-    def TestNegativeOrderRaisesException(self):
-        """Проверяем обработку отрицательного порядка."""
+    def test_negative_order_raises_exception(self):
         with self.assertRaises(Exception) as context:
             CyclicGroup(-1)
-        self.assertEqual(str(context.exception), "Порядок группы положительное число")
+        self.assertEqual(str(context.exception), "Порядок группы должен быть положительным числом")
 
-    def TestZeroOrderRaisesException(self):
-        """Проверяем обработку нулевого порядка."""
+    def test_zero_order_raises_exception(self):
         with self.assertRaises(Exception) as context:
             CyclicGroup(0)
-        self.assertEqual(str(context.exception), "Порядок группы положительное число")
+        self.assertEqual(str(context.exception), "Порядок группы должен быть положительным числом")
 
-    def TestIdentity(self):
-        """Тестируем получение нейтрального элемента."""
+    def test_identity(self):
         self.assertEqual(self.group_order_1.identity().value, 0)
         self.assertEqual(self.group_order_2.identity().value, 0)
 
-    def TestOp(self):
-        """Тестируем групповую операцию (сложение по модулю)."""
+    def test_op(self):
         elem1 = IntegerElement(1, self.group_order_4)
         elem2 = IntegerElement(3, self.group_order_4)
-        self.assertEqual(self.group_order_4.op(elem1, elem2).value, 0)  # 1 + 3 mod 4 = 0
+        self.assertEqual(self.group_order_4.op(elem1, elem2).value, 0)
 
-    def TestInverseForZeroElement(self):
-        """Тестируем получение обратного элемента для нуля."""
+    def test_inverse_for_zero_element(self):
         zero_elem = IntegerElement(0, self.group_order_5)
-        self.assertEqual(self.group_order_5.inverse(zero_elem).value, 0,
-                         "Обратный к 0 должен быть 0 в любой группе")
+        self.assertEqual(self.group_order_5.inverse(zero_elem).value, 0)
 
-    def TestInverseConsistency(self):
-        """Тестируем, что двойное взятие обратного элемента возвращает исходный элемент."""
+    def test_inverse_consistency(self):
         elem = IntegerElement(3, self.group_order_4)
         inverse_elem = self.group_order_4.inverse(elem)
         inverse_inverse_elem = self.group_order_4.inverse(inverse_elem)
-        self.assertEqual(inverse_inverse_elem.value, elem.value,
-                         "Двойное взятие обратного должно давать исходный элемент")
+        self.assertEqual(inverse_inverse_elem.value, elem.value)
 
-    def TestIsSimple(self):
-        """Тестируем проверку на
-         группы."""
+    def test_is_simple(self):
         self.assertTrue(self.group_order_1.is_simple())
         self.assertTrue(self.group_order_5.is_simple())
         self.assertFalse(self.group_order_4.is_simple())
