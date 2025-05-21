@@ -217,7 +217,6 @@ class AlternatingGroup(FiniteGroup[List[int], PermutationElement]):
                     dst = cycle[(i + 1) % len(cycle)] - 1
                     current[dst] = original[src]
             _check_list(current)
-            print(current)
             return PermutationElement(current, self)
 
         # 1) По списку образов
