@@ -201,7 +201,8 @@ class AlternatingGroup(FiniteGroup[List[int], PermutationElement]):
         def _check_list(perm: List[int]) -> None:
             if sorted(perm) != list(range(1, self._rank + 1)):
                 raise ValueError("Перестановка некорректна")
-            if not Permutation(perm).is_even:
+            perm_0 = [x - 1 for x in perm]
+            if not Permutation(perm_0).is_even:
                 raise ValueError("Перестановка нечётна")
 
         def _from_cycles(cycles: List[Tuple[int, ...]]) -> PermutationElement:
@@ -226,7 +227,7 @@ class AlternatingGroup(FiniteGroup[List[int], PermutationElement]):
         # 2) По списку циклов
         if (isinstance(item, list)
                 and all(isinstance(c, tuple) for c in item)
-                and all(all(isinstance(x, int) for x in c) for c in item)): # TODO
+                and all(all(isinstance(x, int) for x in c) for c in item)):
             return _from_cycles(item)
 
         # 3) По строке циклической записи
@@ -259,5 +260,6 @@ class AlternatingGroup(FiniteGroup[List[int], PermutationElement]):
             Iterator[PermutationElement]: Все n!/2 элементов группы.
         """
         for perm in product(range(1, self._rank + 1), repeat=self._rank):
-            if len(set(perm)) == self._rank and Permutation(list(perm)).is_even:
+            perm_0 = [x - 1 for x in perm]
+            if len(set(perm)) == self._rank and Permutation(list(perm_0)).is_even:
                 yield self[list(perm)]
